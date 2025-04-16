@@ -49,4 +49,8 @@ class TestUserController:
         assert uc.get_user_by_email(email) == user1
 
         captured = capsys.readouterr()
-        warnings.warn(captured.out.strip(), UserWarning)
+        
+        expected_message = f"user found with mail {email}"
+        if expected_message not in captured.out:
+            warnings.warn(f"Expected message not found in captured output: {captured.out.strip()}", UserWarning)
+        
