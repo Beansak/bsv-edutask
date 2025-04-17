@@ -1,5 +1,4 @@
 import pytest
-import warnings
 from unittest.mock import patch, MagicMock
 from src.controllers.usercontroller import UserController
 
@@ -56,7 +55,7 @@ class TestUserController:
         
         expected_message = f"user found with mail {email}"
         if expected_message not in captured.out:
-            warnings.warn(f"Expected message not found in captured output: {captured.out.strip()}", UserWarning)
+            raise AssertionError(f"Expected message not found in captured output: {captured.out.strip()}")
         
 
     def test_valid_email_no_user(self):
@@ -72,3 +71,15 @@ class TestUserController:
         # Mock the user object
 
         assert uc.get_user_by_email(email) == None
+
+
+    def test_database_operation_failure(self):
+        """Test the get_user_by_email method with a database operation failure."""
+        user = None
+        email = "jane.doe@gmail.com"
+        mockedDAO = MagicMock()
+        mockedDAO.find.side_effect = Exception("Database error")
+        uc = UserController(dao=mockedDAO)
+
+        with pytest.raises(Exception, match="Database error"):
+            uc.get_user_by_email(email)
