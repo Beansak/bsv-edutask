@@ -69,7 +69,7 @@ class TestDAOCreate:
         assert result["done"] == data["done"]
 
     @pytest.mark.unit
-    def test_invalid_input(self, mocked_dao):
+    def test_wrong_field_type(self, mocked_dao):
         """Test the create method with invalid input."""
         # Mock the input data
         data = {
@@ -84,3 +84,56 @@ class TestDAOCreate:
         # Verify that the exception is raised
         with pytest.raises(WriteError):
             mocked_dao.create(data)
+
+    @pytest.mark.unit
+    def test_missing_required_field(self, mocked_dao):
+        """Test the create method with invalid input."""
+        # Mock the input data
+        data = {
+            "description": "This is a test todo",
+            "done": False,
+        }
+        
+        # Call the create method and expect an exception
+
+
+        # Verify that the exception is raised
+        with pytest.raises(WriteError):
+            mocked_dao.create(data)
+
+    @pytest.mark.unit
+    def test_value_out_of_range(self, mocked_dao):
+        """Test the create method with invalid input."""
+        # Mock the input data
+        data = {
+            "title": "Test Todo",
+            "description": "This is a test todo",
+            "done": False,
+            "extra_field": 12345678901234567890  # Out of range value
+        }
+        
+        # Call the create method and expect an exception
+
+
+        # Verify that the exception is raised
+        with pytest.raises(OverflowError):
+            mocked_dao.create(data)
+
+    @pytest.mark.unit
+    def test_extra_field(self, mocked_dao):
+        """Test the create method with invalid input."""
+        # Mock the input data
+        data = {
+            "title": False, # Invalid type for title
+            "description": "This is a test todo",
+            "done": False,
+            "extra_field": "extra"  # Out of range value
+        }
+        
+        # Call the create method and expect an exception
+
+
+        # Verify that the exception is raised
+        with pytest.raises(WriteError):
+            mocked_dao.create(data)
+
