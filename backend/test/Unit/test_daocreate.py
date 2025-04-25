@@ -1,3 +1,12 @@
+#Run with docker
+#Start docker with docker-compose up
+#In a new terminal run "docker exec -it edutask-backend bash"
+#Run the tests with "pytest -s -m (your mark)" its unit for me
+#Every time you change the code, you have to go to the docker desktop and delete the backend container in the container tab
+#Then go to the images tab and delete the backend image
+#Docker backend remembers the last image and container, so you have to delete them to run the new code
+#After every change, you have to run docker-compose up again
+
 import pytest
 from unittest.mock import patch, MagicMock
 from src.util.dao import DAO
@@ -21,6 +30,8 @@ json_validator = {
         }
     }
 }
+
+
 
 class TestDAOCreate:
 
