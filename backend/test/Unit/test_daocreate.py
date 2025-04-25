@@ -1,6 +1,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from src.util.dao import DAO
+from pymongo import MongoClient
+from pymongo.errors import WriteError
 
 # JSON validator based on the todo schema
 json_validator = {
@@ -20,22 +22,30 @@ json_validator = {
     }
 }
 
-@pytest.fixture
-def mocked_dao():
-    """Fixture to mock the DAO class and its __init__ method."""
-    with patch.object(DAO, '__init__', return_value=None) as mocked_init:
-        # Create a DAO instance (this will not call the real __init__)
-        dao = DAO(collection_name="test_collection")
+class TestDAOCreate:
 
+    @pytest.fixture
+    def mocked_dao(self):
+        """Fixture to mock the DAO class and its __init__ method."""
+            # Create a DAO instance (this will not call the real __init__)
+        with patch("src.util.dao.getValidator", autospec=True) as mockedgetvalidator:
+            mockedgetvalidator.return_value = json_validator
+
+            client = MongoClient("mongodb://root:root@edutask-mongodb:27017")
         # Mock the collection attribute
-        dao.collection = MagicMock()
+            
+            dao = DAO(collection_name="test")
+
+        # Mock the MongoDB collection
+            dao.collection.delete_many({})
 
         yield dao
 
-        # Verify that the mocked __init__ was called
-        mocked_init.assert_called_once_with(collection_name="test_collection")
+        # Cleanup after the test
+        dao.collection.delete_many({})
+        # Close the client connection
+        client.close()
 
-class TestDAOCreate:
 
     @pytest.mark.unit
     def test_valid_input(self, mocked_dao):
@@ -47,27 +57,30 @@ class TestDAOCreate:
             "done": False
         }
 
-        # Mock the insert_one method
-        mocked_dao.collection.insert_one.return_value.inserted_id = "mocked_id"
-
-        mocked_dao.collection.find_one.return_value = {
-            "_id": "mocked_id",
-            "title": "Test Todo",
-            "description": "This is a test todo",
-            "done": False
-        }
-
         # Call the real create method
-        result = DAO.create(mocked_dao, data)
-
-        print(f"Result of create method: {result}")
+        result = mocked_dao.create(data)
 
         # Verify that the create method interacts with the database
-        mocked_dao.collection.insert_one.assert_called_once_with(data)
 
         # Check if the result is as expected
         assert result is not None
-        assert result["_id"] == "mocked_id"
         assert result["title"] == data["title"]
         assert result["description"] == data["description"]
         assert result["done"] == data["done"]
+
+    @pytest.mark.unit
+    def test_invalid_input(self, mocked_dao):
+        """Test the create method with invalid input."""
+        # Mock the input data
+        data = {
+            "title": False, # Invalid type for title
+            "description": "This is a test todo",
+            "done": False,
+        }
+        
+        # Call the create method and expect an exception
+
+
+        # Verify that the exception is raised
+        with pytest.raises(WriteError):
+            mocked_dao.create(data)
