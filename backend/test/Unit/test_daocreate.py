@@ -12,6 +12,7 @@ from unittest.mock import patch, MagicMock
 from src.util.dao import DAO
 from pymongo import MongoClient
 from pymongo.errors import WriteError
+from pymongo.errors import DuplicateKeyError
 
 # JSON validator based on the todo schema
 json_validator = {
@@ -49,6 +50,9 @@ class TestDAOCreate:
 
         # Mock the MongoDB collection
             dao.collection.delete_many({})
+
+        # ⚡ CREATE UNIQUE INDEX ON 'title' FIELD
+        dao.collection.create_index("title", unique=True)
 
         yield dao
 
@@ -132,19 +136,36 @@ class TestDAOCreate:
 
     @pytest.mark.unit
     def test_extra_field(self, mocked_dao):
-        """Test the create method with invalid input."""
-        # Mock the input data
+        """Test the create method with valid fields plus an extra field."""
         data = {
-            "title": False, # Invalid type for title
+            "title": "Test Todo",
             "description": "This is a test todo",
             "done": False,
-            "extra_field": "extra"  # Out of range value
+            "extra_field": "extra value" 
         }
+
+        result = mocked_dao.create(data)
+
+        # Check the inserted document contains the extra field
+        assert result["extra_field"] == "extra value"
+
+    @pytest.mark.unit
+    def test_duplicated_value(self, mocked_dao):
+        """Test that inserting a document with a duplicated value raises a DuplicateKeyError."""
+        data = {
+            "title": "Unique Title",
+            "description": "This is a test todo",
+            "done": False
+        }
+
+        # Insert the first document
+        with patch('re.fullmatch') as mockfullmatch:
+            mockfullmatch.return_value = True
+            result1 = mocked_dao.create(data)
         
-        # Call the create method and expect an exception
+        assert result1["title"] == data["title"]
 
-
-        # Verify that the exception is raised
-        with pytest.raises(WriteError):
+        # Try inserting the same document again
+        with pytest.raises(DuplicateKeyError):
             mocked_dao.create(data)
 
