@@ -42,14 +42,26 @@ describe('Logging into the system', () => {
           'description': "description",
           'userid': uid,
           'url': "http://example.com",
-          'todos': ""
+          'todos': "remove"
           }
+
 
 
       })
       .then((response) => {
           cy.log('Task created', response.body)
       })
+
+      cy.get('.container')
+        .contains('.title-overlay', 'new task')
+        .parents('a')
+        .click()
+
+      cy.get('.todo-list .todo-item')
+        .contains('.editable', 'new todo')
+        .parent()
+        .find('.remover')
+        .click()
     })
 
     beforeEach(function () {
