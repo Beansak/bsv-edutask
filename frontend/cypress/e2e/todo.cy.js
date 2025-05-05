@@ -42,15 +42,23 @@ describe('Logging into the system', () => {
           'description': "description",
           'userid': uid,
           'url': "http://example.com",
-          'todos': ""
+          'todos': "DELETE ME",
           }
-
-
 
       })
       .then((response) => {
           cy.log('Task created', response.body)
       })
+      cy.get('.container')
+        .contains('.title-overlay', 'new task')
+        .parents('a')
+        .click()
+
+      cy.get('.todo-list .todo-item')
+        .contains('.editable', 'DELETE ME')
+        .parent()
+        .find('.remover')
+        .click()
 
     })
 
@@ -64,7 +72,7 @@ describe('Logging into the system', () => {
             .type(email)
         cy.get('form')
             .submit()
-
+      
 
         
   })
@@ -91,7 +99,6 @@ describe('Logging into the system', () => {
         
         //assert that the todo is now in the list
         cy.get('.todo-list')
-        .find('.todo-item').last()
         .should('contain.text', 'new todo')
 
 
