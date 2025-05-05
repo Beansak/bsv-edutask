@@ -41,8 +41,8 @@ describe('Logging into the system', () => {
           'title': "new task",
           'description': "description",
           'userid': uid,
-          'url': "http://example.com"
-         
+          'url': "http://example.com",
+          'todos': ""
           }
 
       })
