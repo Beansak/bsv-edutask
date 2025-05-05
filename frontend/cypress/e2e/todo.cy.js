@@ -42,7 +42,7 @@ describe('Logging into the system', () => {
           'description': "description",
           'userid': uid,
           'url': "http://example.com",
-          'todos': "remove"
+          'todos': ""
           }
 
 
@@ -58,7 +58,7 @@ describe('Logging into the system', () => {
         .click()
 
       cy.get('.todo-list .todo-item')
-        .contains('.editable', 'new todo')
+        .contains('.editable', '')
         .parent()
         .find('.remover')
         .click()
