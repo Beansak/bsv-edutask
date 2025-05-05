@@ -49,6 +49,10 @@ describe('Logging into the system', () => {
       .then((response) => {
           cy.log('Task created', response.body)
       })
+
+    })
+
+    before(function () {
       cy.get('.container')
         .contains('.title-overlay', 'new task')
         .parents('a')
@@ -59,11 +63,11 @@ describe('Logging into the system', () => {
         .parent()
         .find('.remover')
         .click()
-
-    })
+    }
+  )
 
     beforeEach(function () {
-      // enter the main main page
+      
       cy.visit('http://localhost:3000')
 
 
