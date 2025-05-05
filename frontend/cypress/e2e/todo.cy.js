@@ -42,7 +42,7 @@ describe('Logging into the system', () => {
           'description': "description",
           'userid': uid,
           'url': "http://example.com",
-          'todos': ""
+          'todos': "DELETE ME",
           }
 
       })
@@ -67,6 +67,19 @@ describe('Logging into the system', () => {
         
   })
 
+    it('DELETE', () => {
+      cy.get('.container')
+        .contains('.title-overlay', 'new task')
+        .parents('a')
+        .click()
+
+      cy.get('.todo-list .todo-item')
+        .contains('.editable', 'DELETE ME')
+        .parent()
+        .find('.remover')
+        .click()
+
+    })
 
     it('R8UC1: Enters todo', () => {
       
