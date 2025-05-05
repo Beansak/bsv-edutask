@@ -52,16 +52,6 @@ describe('Logging into the system', () => {
           cy.log('Task created', response.body)
       })
 
-      cy.get('.container')
-        .contains('.title-overlay', 'new task')
-        .parents('a')
-        .click()
-
-      cy.get('.todo-list .todo-item')
-        .contains('.editable', '')
-        .parent()
-        .find('.remover')
-        .click()
     })
 
     beforeEach(function () {
@@ -101,6 +91,7 @@ describe('Logging into the system', () => {
         
         //assert that the todo is now in the list
         cy.get('.todo-list')
+        .find('.todo-item').last()
         .should('contain.text', 'new todo')
 
 
