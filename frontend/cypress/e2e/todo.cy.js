@@ -41,8 +41,8 @@ describe('Logging into the system', () => {
           'title': "new task",
           'description': "description",
           'userid': uid,
-          'url': "http://example.com",
-          'todos': "DELETE ME",
+          'url': "http://example.com"
+         
           }
 
       })
@@ -52,22 +52,8 @@ describe('Logging into the system', () => {
 
     })
 
-    before(function () {
-      cy.get('.container')
-        .contains('.title-overlay', 'new task')
-        .parents('a')
-        .click()
-
-      cy.get('.todo-list .todo-item')
-        .contains('.editable', 'DELETE ME')
-        .parent()
-        .find('.remover')
-        .click()
-    }
-  )
-
     beforeEach(function () {
-      
+      // enter the main main page
       cy.visit('http://localhost:3000')
 
 
