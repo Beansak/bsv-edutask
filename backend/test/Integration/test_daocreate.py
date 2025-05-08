@@ -51,9 +51,6 @@ class TestDAOCreate:
         # Mock the MongoDB collection
             dao.collection.delete_many({})
 
-        # ⚡ CREATE UNIQUE INDEX ON 'title' FIELD
-        dao.collection.create_index("title", unique=True)
-
         yield dao
 
         # Cleanup after the test
