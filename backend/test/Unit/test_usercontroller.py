@@ -37,7 +37,7 @@ class TestUserController:
             assert uc.get_user_by_email(email) == user
 
 
-    def test_valid_email_multiple_users(self, capsys):
+    def test_valid_email_multiple_users(self):
         """Test the get_user_by_email method with a valid email address and multiple users.
         """
         user1 = {'firstName': 'Jane', 'lastName': 'Doe', 'email': 'jane.doe@gmail.com'}
@@ -51,11 +51,6 @@ class TestUserController:
 
         assert uc.get_user_by_email(email) == user1
 
-        captured = capsys.readouterr()
-        
-        expected_message = f"user found with mail {email}"
-        if expected_message not in captured.out:
-            raise AssertionError(f"Expected message not found in captured output: {captured.out.strip()}")
         
 
     def test_valid_email_multiple_users_gives_warning(self, capsys):
