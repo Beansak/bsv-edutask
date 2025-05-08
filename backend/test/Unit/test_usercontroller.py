@@ -58,6 +58,27 @@ class TestUserController:
             raise AssertionError(f"Expected message not found in captured output: {captured.out.strip()}")
         
 
+    def test_valid_email_multiple_users_gives_warning(self, capsys):
+        """Test the get_user_by_email method with a valid email address and multiple users.
+        """
+        user1 = {'firstName': 'Jane', 'lastName': 'Doe', 'email': 'jane.doe@gmail.com'}
+        user2 = {'firstName': 'John', 'lastName': 'Doe', 'email': 'jane.doe@gmail.com'}
+        email = "jane.doe@gmail.com"
+        mockedDAO = MagicMock()
+
+        mockedDAO.find.return_value = [user1, user2] 
+
+        uc = UserController(dao=mockedDAO)
+
+        uc.get_user_by_email(email)
+
+        captured = capsys.readouterr()
+        
+        expected_message = f"user found with mail {email}"
+        if expected_message not in captured.out:
+            raise AssertionError(f"Expected message not found in captured output: {captured.out.strip()}")
+        
+
     def test_valid_email_no_user(self):
         """Test the get_user_by_email method with a valid email address but no user.
         """
