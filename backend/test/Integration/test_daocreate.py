@@ -22,7 +22,8 @@ json_validator = {
         "properties": {
             "title": {
                 "bsonType": "string",
-                "description": "must be a string and is required"
+                "description": "must be a string and is required",
+                "uniqueItems": True
             },
             "done": {
                 "bsonType": "bool",
