@@ -1,7 +1,7 @@
 #Run with docker
 #Start docker with docker-compose up
 #In a new terminal run "docker exec -it edutask-backend bash"
-#Run the tests with "pytest -s -m (your mark)" its unit for me
+#Run the tests with "pytest -s -m (your mark)" its integration for me
 #Every time you change the code, you have to go to the docker desktop and delete the backend container in the container tab
 #Then go to the images tab and delete the backend image
 #Docker backend remembers the last image and container, so you have to delete them to run the new code
@@ -60,7 +60,7 @@ class TestDAOCreate:
         client.close()
 
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_valid_input(self, mocked_dao):
         """Test the create method with valid input."""
         # Mock the input data
@@ -81,7 +81,7 @@ class TestDAOCreate:
         assert result["description"] == data["description"]
         assert result["done"] == data["done"]
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_wrong_field_type(self, mocked_dao):
         """Test the create method with invalid input."""
         # Mock the input data
@@ -98,7 +98,7 @@ class TestDAOCreate:
         with pytest.raises(WriteError):
             mocked_dao.create(data)
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_missing_required_field(self, mocked_dao):
         """Test the create method with invalid input."""
         # Mock the input data
@@ -114,7 +114,7 @@ class TestDAOCreate:
         with pytest.raises(WriteError):
             mocked_dao.create(data)
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_value_out_of_range(self, mocked_dao):
         """Test the create method with invalid input."""
         # Mock the input data
@@ -132,7 +132,7 @@ class TestDAOCreate:
         with pytest.raises(OverflowError):
             mocked_dao.create(data)
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_extra_field(self, mocked_dao):
         """Test the create method with valid fields plus an extra field."""
         data = {
@@ -147,7 +147,7 @@ class TestDAOCreate:
         # Check the inserted document contains the extra field
         assert result["extra_field"] == "extra value"
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_duplicated_value(self, mocked_dao):
         """Test that inserting a document with a duplicated value raises a DuplicateKeyError."""
         data = {
