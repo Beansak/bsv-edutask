@@ -19,6 +19,7 @@ class TestUserController:
         with pytest.raises(ValueError, match="Error: invalid email address"):
             uc.get_user_by_email(email)
 
+    @pytest.mark.unit
 
     def test_valid_email_adress(self):
         """Test the get_user_by_email method with a valid email address.
@@ -36,6 +37,7 @@ class TestUserController:
             mockfullmatch.return_value = True
             assert uc.get_user_by_email(email) == user
 
+    @pytest.mark.unit
 
     def test_valid_email_multiple_users(self):
         """Test the get_user_by_email method with a valid email address and multiple users.
@@ -52,6 +54,7 @@ class TestUserController:
         assert uc.get_user_by_email(email) == user1
 
         
+    @pytest.mark.unit
 
     def test_valid_email_multiple_users_gives_warning(self, capsys):
         """Test the get_user_by_email method with a valid email address and multiple users.
@@ -73,6 +76,7 @@ class TestUserController:
         if expected_message not in captured.out:
             raise AssertionError(f"Expected message not found in captured output: {captured.out.strip()}")
         
+    @pytest.mark.unit
 
     def test_valid_email_no_user(self):
         """Test the get_user_by_email method with a valid email address but no user.
@@ -88,7 +92,8 @@ class TestUserController:
 
         assert uc.get_user_by_email(email) == None
 
-
+    @pytest.mark.unit
+    
     def test_database_operation_failure(self):
         """Test the get_user_by_email method with a database operation failure."""
         user = None
