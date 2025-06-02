@@ -49,7 +49,7 @@ describe('Logging into the system', () => {
       })
       .then((response) => {
           cy.log('Task created', response.body)
-          todoId = response.body.todos[0]._id || response.body.todos[0].$oid;
+          todoId = response.body.todos._id
           cy.log('Todo Id', todoId);
       })
 
