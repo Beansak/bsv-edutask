@@ -4,7 +4,7 @@ describe('Logging into the system', () => {
     let name // name of the user (firstName + ' ' + lastName)
     let email // email of the user
     let taskId
-    let todoId
+    let todoID
   
     before(function () {
       // create a fabricated user from a fixture
@@ -63,7 +63,7 @@ describe('Logging into the system', () => {
           }
         })
         .then((response) => {
-          todoId = response.body._id.$oid;
+          todoID = response.body._id.$oid;
         });
           
       });
