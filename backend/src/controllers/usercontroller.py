@@ -25,7 +25,7 @@ class UserController(Controller):
             Exception -- in case any database operation fails
         """
 
-        # Github actions test
+        # Github actions test 2
 
         if not re.fullmatch(emailValidator, email):
             raise ValueError('Error: invalid email address')
