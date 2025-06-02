@@ -93,7 +93,12 @@ describe('Logging into the system', () => {
         .click()
 
       log_in()
-      
+
+      cy.get('.container')
+        .contains('.title-overlay', 'new task')
+        .parents('a')
+        .click()
+        
       cy.get('.todo-list')
         .should('not.contain.text', 'DeleteTest')
     })
