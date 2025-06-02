@@ -51,10 +51,9 @@ describe('Logging into the system', () => {
       .then((response) => {
           console.log('Task created', response.body)
           taskId = response.body[0]._id.$oid;
-          //todoId = response.body[0]._id.$oid;
-          //console.log('Todo ID:', todoId);
           
-      })
+          
+      });
 
         cy.request({
           method: 'POST',
@@ -68,8 +67,8 @@ describe('Logging into the system', () => {
         })
         .then((response) => {
           todoId = response.body._id.$oid;
-        })
-    })
+        });
+    });
 
     beforeEach(function () {
       // enter the main main page
