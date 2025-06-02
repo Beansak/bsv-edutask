@@ -3,6 +3,7 @@ describe('Logging into the system', () => {
     let uid // user id
     let name // name of the user (firstName + ' ' + lastName)
     let email // email of the user
+    let todoId
   
     before(function () {
       // create a fabricated user from a fixture
@@ -42,7 +43,7 @@ describe('Logging into the system', () => {
           'description': "description",
           'userid': uid,
           'url': "http://example.com",
-          'todos': "DELETE ME",
+          'todos': "TodoInit",
           }
 
       })
@@ -66,19 +67,6 @@ describe('Logging into the system', () => {
         
   })
 
-    it('DELETE', () => {
-      cy.get('.container')
-        .contains('.title-overlay', 'new task')
-        .parents('a')
-        .click()
-
-      cy.get('.todo-list .todo-item')
-        .contains('.editable', 'DELETE ME')
-        .parent()
-        .find('.remover')
-        .click()
-
-    })
 
     it('R8UC1: Enters todo', () => {
       
@@ -123,10 +111,20 @@ describe('Logging into the system', () => {
     })
 
     it("R8UC2: Toggle todo to done", () => {
+      
       cy.get('.container')
         .contains('.title-overlay', 'new task')
         .parents('a')
         .click()
+
+      cy.request({
+      method: 'PUT',
+      url: `http://localhost:5000/todos/byid/${todoId}`,
+      form: true,
+      body: {
+        data: "{'$set': {'done': false}}"
+      }
+    });
 
       cy.get('.todo-list .todo-item')
         .parent()
@@ -163,13 +161,13 @@ describe('Logging into the system', () => {
         .click()
 
       cy.get('.todo-list .todo-item')
-        .contains('.editable', 'new todo')
+        .contains('.editable', 'TodoInit')
         .parent()
         .find('.remover')
         .click()
 
       cy.get('.todo-list')
-        .should('not.contain.text', 'new todo')
+        .should('not.contain.text', 'TodoInit')
     })
   
     after(function () {
