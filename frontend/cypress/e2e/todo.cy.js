@@ -6,6 +6,17 @@ describe('Logging into the system', () => {
     let taskId
     let todoID
   
+    function log_in(){
+      cy.visit('http://localhost:3000')
+
+
+      cy.contains('div', 'Email Address')
+            .find('input[type=text]')
+            .type(email)
+        cy.get('form')
+            .submit()
+    }
+    
     before(function () {
       // create a fabricated user from a fixture
       cy.fixture('user.json')
@@ -25,14 +36,7 @@ describe('Logging into the system', () => {
   
     before(function () {
       // create a task for the user
-      cy.visit('http://localhost:3000')
-
-
-      cy.contains('div', 'Email Address')
-            .find('input[type=text]')
-            .type(email)
-        cy.get('form')
-            .submit()
+        log_in()
 
 
         cy.request({
@@ -58,7 +62,7 @@ describe('Logging into the system', () => {
           form: true,
           body: {
             taskid: taskId,
-            description: "todoDescription",
+            description: "TodoInit",
             done: false
           }
         })
@@ -73,14 +77,7 @@ describe('Logging into the system', () => {
 
     beforeEach(function () {
       // enter the main main page
-      cy.visit('http://localhost:3000')
-
-
-      cy.contains('div', 'Email Address')
-            .find('input[type=text]')
-            .type(email)
-        cy.get('form')
-            .submit()    
+      log_in() 
   })
 
     it("R8UC3: Delete todo", () => {
@@ -95,6 +92,8 @@ describe('Logging into the system', () => {
         .find('.remover')
         .click()
 
+      log_in()
+      
       cy.get('.todo-list')
         .should('not.contain.text', 'DeleteTest')
     })
