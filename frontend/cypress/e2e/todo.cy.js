@@ -52,10 +52,7 @@ describe('Logging into the system', () => {
           console.log('Task created', response.body)
           taskId = response.body[0]._id.$oid;
           
-          
-      });
-
-        cy.request({
+          return cy.request({
           method: 'POST',
           url: 'http://localhost:5000/todos/create',
           form: true,
@@ -68,6 +65,10 @@ describe('Logging into the system', () => {
         .then((response) => {
           todoId = response.body._id.$oid;
         });
+          
+      });
+
+        
     });
 
     beforeEach(function () {
