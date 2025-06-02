@@ -3,6 +3,7 @@ describe('Logging into the system', () => {
     let uid // user id
     let name // name of the user (firstName + ' ' + lastName)
     let email // email of the user
+    let taskId
     let todoId
   
     before(function () {
@@ -43,17 +44,30 @@ describe('Logging into the system', () => {
           'description': "description",
           'userid': uid,
           'url': "http://example.com",
-          'todos': "TodoInit",
+          'todos': "DeleteTest",
           }
 
       })
       .then((response) => {
           console.log('Task created', response.body)
-          todoId = response.body[0]._id.$oid;
-          console.log('Todo ID:', todoId);
+          taskId = response.body[0]._id.$oid;
+          //todoId = response.body[0]._id.$oid;
+          //console.log('Todo ID:', todoId);
           
       })
 
+        cy.request({
+          method: 'POST',
+          url: 'http://localhost:5000/todos/create',
+          form: true,
+          body: {
+            taskid: taskId,
+            description: todoDescription,
+            done: false
+          }
+        }).then((response) => {
+          todoId = response.body._id.$oid;
+        });
     })
 
     beforeEach(function () {
@@ -65,11 +79,24 @@ describe('Logging into the system', () => {
             .find('input[type=text]')
             .type(email)
         cy.get('form')
-            .submit()
-            
-        
+            .submit()    
   })
+  
+    it("R8UC3: Delete todo", () => {
+      cy.get('.container')
+        .contains('.title-overlay', 'new task')
+        .parents('a')
+        .click()
 
+      cy.get('.todo-list .todo-item')
+        .contains('.editable', 'DeleteTest')
+        .parent()
+        .find('.remover')
+        .click()
+
+      cy.get('.todo-list')
+        .should('not.contain.text', 'DeleteTest')
+    })
 
     
     it("R8UC1: ADD button disabled when nothing written in add todo input", () => {
@@ -148,22 +175,7 @@ describe('Logging into the system', () => {
       });
     })
 
-    it("R8UC3: Delete todo", () => {
-      cy.get('.container')
-        .contains('.title-overlay', 'new task')
-        .parents('a')
-        .click()
-
-      cy.get('.todo-list .todo-item')
-        .contains('.editable', 'TodoInit')
-        .parent()
-        .find('.remover')
-        .click()
-
-      cy.get('.todo-list')
-        .should('not.contain.text', 'TodoInit')
-    })
-
+    
     it('R8UC1: Enters todo', () => {
       
         cy.get('.container')
