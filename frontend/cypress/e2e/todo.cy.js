@@ -62,7 +62,7 @@ describe('Logging into the system', () => {
           form: true,
           body: {
             taskid: taskId,
-            description: todoDescription,
+            description: 'todoDescription',
             done: false
           }
         }).then((response) => {
@@ -81,7 +81,7 @@ describe('Logging into the system', () => {
         cy.get('form')
             .submit()    
   })
-  
+
     it("R8UC3: Delete todo", () => {
       cy.get('.container')
         .contains('.title-overlay', 'new task')
