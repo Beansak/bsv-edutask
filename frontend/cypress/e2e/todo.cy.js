@@ -49,8 +49,10 @@ describe('Logging into the system', () => {
       })
       .then((response) => {
           cy.log('Task created', response.body)
+          console.log('Task created', response.body)
           todoId = response.body.todos._id
           cy.log('Todo Id', todoId);
+          
       })
 
     })
