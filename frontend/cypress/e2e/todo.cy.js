@@ -48,10 +48,9 @@ describe('Logging into the system', () => {
 
       })
       .then((response) => {
-          cy.log('Task created', response.body)
           console.log('Task created', response.body)
-          todoId = response.body.todos._id
-          cy.log('Todo Id', todoId);
+          todoId = response.body[0]._id.$oid;
+          console.log('Todo ID:', todoId);
           
       })
 
@@ -72,31 +71,7 @@ describe('Logging into the system', () => {
   })
 
 
-    it('R8UC1: Enters todo', () => {
-      
-        cy.get('.container')
-        .contains('.title-overlay', 'new task')
-        .parents('a')
-        .click()
-
-        //enters todo
-
-        cy.get('.todo-list')
-        .find('.inline-form')
-        .find('input[type=text]')
-        .type('new todo')
-        
-        //press button named "add" to add todo
-        .get('.inline-form input[value="Add"]')
-        .click()
-        
-        
-        //assert that the todo is now in the list
-        cy.get('.todo-list')
-        .should('contain.text', 'new todo')
-
-
-    })
+    
     it("R8UC1: ADD button disabled when nothing written in add todo input", () => {
         cy.get('.container')
         .contains('.title-overlay', 'new task')
@@ -122,23 +97,26 @@ describe('Logging into the system', () => {
         .click()
 
       cy.request({
-      method: 'PUT',
-      url: `http://localhost:5000/todos/byid/${todoId}`,
-      form: true,
-      body: {
-        data: "{'$set': {'done': false}}"
-      }
-    });
+        method: 'PUT',
+        url: `http://localhost:5000/todos/byid/${todoID}`,
+        form: true,
+        body: {
+          data: JSON.stringify({'$set': {'done': false}})
+        }
+      });
 
       cy.get('.todo-list .todo-item')
+        .contains('.editable', 'TodoInit')
         .parent()
         .find('.checker.unchecked')
         .click()
 
-      cy.get('.todo-list .todo-item')
-        .parent()
-        .find('.checker.checked')
-        .should('exist')
+      cy.request({
+        method: 'GET',
+        url: `http://localhost:5000/todos/byid/${todoID}`,
+      }).then((response) => {
+        expect(response.body.done).to.be.true;
+      });
     })
 
     it("R8UC2: Toggle todo to not done", () => {
@@ -147,15 +125,27 @@ describe('Logging into the system', () => {
         .parents('a')
         .click()
 
+      cy.request({
+        method: 'PUT',
+        url: `http://localhost:5000/todos/byid/${todoID}`,
+        form: true,
+        body: {
+          data: JSON.stringify({'$set': {'done': true}})
+        }
+      });
+
       cy.get('.todo-list .todo-item')
+        .contains('.editable', 'TodoInit')
         .parent()
         .find('.checker.checked')
         .click()
 
-      cy.get('.todo-list .todo-item')
-        .parent()
-        .find('.checker.unchecked')
-        .should('exist')
+      cy.request({
+        method: 'GET',
+        url: `http://localhost:5000/todos/byid/${todoID}`,
+      }).then((response) => {
+        expect(response.body.done).to.be.false;
+      });
     })
 
     it("R8UC3: Delete todo", () => {
@@ -172,6 +162,32 @@ describe('Logging into the system', () => {
 
       cy.get('.todo-list')
         .should('not.contain.text', 'TodoInit')
+    })
+
+    it('R8UC1: Enters todo', () => {
+      
+        cy.get('.container')
+        .contains('.title-overlay', 'new task')
+        .parents('a')
+        .click()
+
+        //enters todo
+
+        cy.get('.todo-list')
+        .find('.inline-form')
+        .find('input[type=text]')
+        .type('new todo')
+        
+        //press button named "add" to add todo
+        .get('.inline-form input[value="Add"]')
+        .click()
+        
+        
+        //assert that the todo is now in the list
+        cy.get('.todo-list')
+        .should('contain.text', 'new todo')
+
+
     })
   
     after(function () {
