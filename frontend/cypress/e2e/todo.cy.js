@@ -62,12 +62,13 @@ describe('Logging into the system', () => {
           form: true,
           body: {
             taskid: taskId,
-            description: 'todoDescription',
+            description: "todoDescription",
             done: false
           }
-        }).then((response) => {
+        })
+        .then((response) => {
           todoId = response.body._id.$oid;
-        });
+        })
     })
 
     beforeEach(function () {
