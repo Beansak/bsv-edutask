@@ -62,8 +62,7 @@ describe('Logging into the system', () => {
             .type(email)
         cy.get('form')
             .submit()
-      
-
+            
         
   })
 
